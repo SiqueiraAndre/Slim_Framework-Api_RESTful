@@ -12,6 +12,15 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
 ]));
 
 $app->add(function ($req, $res, $next) {
+    $token = filter_input(INPUT_GET, 'token');
+    //$token = $_GET['token'] ?? null;  // utiliza agora o metodo acima que filtra qualquer caracter estranho.
+    if ($token){
+        $req = $req->withHeader('Authorization', $token);
+    }
+    return $next($req, $res);
+});
+
+$app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
         ->withHeader('Access-Control-Allow-Origin', '*')
